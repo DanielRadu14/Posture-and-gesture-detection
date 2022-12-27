@@ -3048,11 +3048,11 @@ public class KinectManager : MonoBehaviour
 					//if(userId != 0 && dictUserIdToIndex.ContainsKey(userId))
 					{
 						//Int64 userId = alUserIds[userIndex];
-                        if(RecordingManager.gameModeStat != RecordingManager.GameMode.Playback)
+                        if(RecordingManager.Instance.gameModeStat != RecordingManager.GameMode.Playback)
                         {
                             controller.UpdateAvatar(userId);
                         }
-						else if (RecordingManager.gameModeStat == RecordingManager.GameMode.Playback)
+						else if (RecordingManager.Instance.gameModeStat == RecordingManager.GameMode.Playback)
                         {
                             controller.UpdateAvatarFromFile();
                         }

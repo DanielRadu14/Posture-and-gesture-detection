@@ -55,20 +55,29 @@ public class DTW : MonoBehaviour
         readData(ref_file);
     }
 
+    private void GetLastUserFrames()
+    {
+        user_frames = RecordingManager.Instance.user_frames_list.ToArray();
+        int numberOfFramesChunks = user_frames.Length / RecordingManager.Instance.recordingFrameLimit;
+
+        var first = RecordingManager.Instance.recordingFrameLimit * (numberOfFramesChunks - 1);
+        var second = RecordingManager.Instance.recordingFrameLimit * numberOfFramesChunks - 1;
+
+        user_frames = user_frames.Skip(first).Take(second - first + 1).ToArray();
+    }
+
     /// <summary>
     /// Read data from user and reference files and init global structures.
     /// </summary>
     private void readData(string ref_file)
     {
         // load user data
-        int user_frames_count = RecordingManager.user_frames_list.Count;
-        user_frames = RecordingManager.user_frames_list.ToArray();
+        GetLastUserFrames();
+        int user_frames_count = user_frames.Length;
 
         // load ref data
         int ref_frames_count = 0;
         ref_frames = loadFrames(ref_file, ref ref_frames_count);
-
-        //weights = FramesManager.ComputeWeights(ref_file);
     }
 
     /// <summary>

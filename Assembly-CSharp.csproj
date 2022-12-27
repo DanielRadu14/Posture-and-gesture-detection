@@ -116,6 +116,8 @@
     <Compile Include="Assets\Scripts\Filters\JointPositionsFilter.cs" />
     <Compile Include="Assets\Scripts\PoseModelHelper.cs" />
     <Compile Include="Assets\Scripts\Samples\FollowUserRotation.cs" />
+    <Compile Include="Assets\Scripts\ThreadedJob.cs" />
+    <Compile Include="Assets\Scripts\Job.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\SharpZipLib\ICSharpCode.SharpZipLib.dll" />
@@ -374,8 +376,11 @@
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.25f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="LZ4Sharp">
+      <HintPath>Assets\Scripts\LZ4Sharp\LZ4Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>Assets\Scripts\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Kinect2UnityWrapper">
       <HintPath>Assets\Plugins\Kinect2UnityWrapper.dll</HintPath>
@@ -383,11 +388,8 @@
     <Reference Include="nuitrack.net">
       <HintPath>Assets\Scripts\Interfaces\Nuitrack\nuitrack.net.dll</HintPath>
     </Reference>
-    <Reference Include="LZ4Sharp">
-      <HintPath>Assets\Scripts\LZ4Sharp\LZ4Sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>Assets\Scripts\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.25f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>

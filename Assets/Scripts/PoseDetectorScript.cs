@@ -151,7 +151,7 @@ public class PoseDetectorScript : MonoBehaviour
             // get the difference
             GetPoseDifference(isMirrored);
 
-            if (infoText != null && RecordingManager.gameModeStat == RecordingManager.GameMode.Default)
+            if (infoText != null && RecordingManager.Instance.gameModeStat == RecordingManager.GameMode.Default)
             {
                 //string sPoseMessage = string.Format("Pose match: {0:F0}% {1:F1}s ago {2}", fMatchPercent * 100f, Time.realtimeSinceStartup - fMatchPoseTime,
                 //                                    (bPoseMatched ? "- Matched" : ""));

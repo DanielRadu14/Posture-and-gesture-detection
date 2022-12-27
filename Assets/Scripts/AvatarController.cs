@@ -132,6 +132,9 @@ public class AvatarController : MonoBehaviour
 	// private instance of the KinectManager
 	protected KinectManager kinectManager;
 
+    //private instance of the RecordingManager
+    protected RecordingManager recordingManager;
+
 	// last hand events
 	private InteractionManager.HandEventType lastLeftHandEvent = InteractionManager.HandEventType.Release;
 	private InteractionManager.HandEventType lastRightHandEvent = InteractionManager.HandEventType.Release;
@@ -382,6 +385,8 @@ public class AvatarController : MonoBehaviour
 		if(!gameObject.activeInHierarchy) 
 			return;
 
+
+
 		// inits the bones array
 		bones = new Transform[31];
 		
@@ -504,6 +509,11 @@ public class AvatarController : MonoBehaviour
 			kinectManager = KinectManager.Instance;
 		}
 
+        if(recordingManager == null)
+        {
+            recordingManager = RecordingManager.Instance;
+        }
+
         // construct the data structure
         RecordingManager.FrameData frameData = new RecordingManager.FrameData();
         frameData.quaternions = new Quaternion[bones.Length];
@@ -613,14 +623,14 @@ public class AvatarController : MonoBehaviour
 			}
 		}
 
-        if (RecordingManager.gameModeStat == RecordingManager.GameMode.Record)
+        if (RecordingManager.Instance.gameModeStat == RecordingManager.GameMode.Record)
         {
-            RecordingManager.WriteDataToFile(frameData);
+            RecordingManager.Instance.WriteDataToFile(frameData);
   
         }
-        else if (RecordingManager.gameModeStat == RecordingManager.GameMode.Default)
+        else if (RecordingManager.Instance.gameModeStat == RecordingManager.GameMode.Default)
         {
-            RecordingManager.addUserFrameData(frameData);
+            RecordingManager.Instance.addUserFrameData(frameData);
         }
 
         if (applyMuscleLimits && kinectManager && kinectManager.IsUserTracked(UserID)) 

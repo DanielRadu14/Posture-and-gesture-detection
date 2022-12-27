@@ -10,12 +10,12 @@ public class RecordingManager : MonoBehaviour
     public AvatarController userAvatarController;
 
     public enum GameMode { Default, Countdown, Record, Playback };
-    public static GameMode gameModeStat = GameMode.Default;
+    public GameMode gameModeStat = GameMode.Default;
 
-    public static StreamWriter streamWriter = null;
+    public StreamWriter streamWriter = null;
     private static string root_path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "Database" + Path.DirectorySeparatorChar;
-    private static string playback_directory = root_path + "Recordings" + Path.DirectorySeparatorChar;
-    public static string record_file;
+    private string playback_directory = root_path + "Recordings" + Path.DirectorySeparatorChar;
+    public string record_file;
 
     public struct FrameData
     {
@@ -30,22 +30,36 @@ public class RecordingManager : MonoBehaviour
     public static int framesRecorded = 0;
     public static int currentFrame = 0;
     public static int noReps = 0;
-    private static int recordingFrameLimit = 500;
+    public int recordingFrameLimit = 500;
 
-    public static List<FrameData> user_frames_list = new List<FrameData>();
+    public List<FrameData> user_frames_list = new List<FrameData>();
 
     private static float recordingCountdown = 10.0f;
 
     public UnityEngine.UI.Text infoText;
     public UnityEngine.UI.Text infoDTW;
-    private static RecordingManager recordingManagerInstance;
+    protected static RecordingManager instance;
 
     public bool detectGestures = true;
 
-    // Start is called before the first frame update
-    void Start()
+    private Job job;
+    public int resDTW;
+
+    public static RecordingManager Instance
     {
-        recordingManagerInstance = this;
+        get
+        {
+            return instance;
+        }
+    }
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
     }
 
     // Update is called once per frame
@@ -107,7 +121,7 @@ public class RecordingManager : MonoBehaviour
 
                 frames = null;
                 framesRecorded = 0;
-                Debug.Log(RecordingManager.record_file + " was created.");
+                Debug.Log(RecordingManager.Instance.record_file + " was created.");
 
                 gameModeStat = GameMode.Record;
                 infoText.text = "Started recording!";
@@ -115,7 +129,7 @@ public class RecordingManager : MonoBehaviour
         }
     }
 
-    public static void StopRecording()
+    public void StopRecording()
     {
         recordingCountdown = 10.0f;
 
@@ -124,12 +138,12 @@ public class RecordingManager : MonoBehaviour
         noReps = 0;
         framesCount = 0;
         currentFrame = 0;
-       
-        recordingManagerInstance.infoText.text = "Recording stopped!";
-        recordingManagerInstance.StartCoroutine(SetGameModeToDefault());
+
+        instance.infoText.text = "Recording stopped!";
+        instance.StartCoroutine(SetGameModeToDefault());
     }
 
-    private static IEnumerator SetGameModeToDefault()
+    private IEnumerator SetGameModeToDefault()
     {
         yield return new WaitForSeconds(3.0f);
         if (streamWriter != null)
@@ -141,28 +155,36 @@ public class RecordingManager : MonoBehaviour
     }
 
     //needs to be in another thread
-    public static int detectGesture(string ref_file)
+    public void detectGesture(string ref_file)
     {
-        DTW dtw = new DTW(ref_file);
-        double resDTW = dtw.getCompResult();
+        job = new Job
+        {
+            refFile = ref_file
+        };
+        job.Start();
 
-        return (int)Math.Round(resDTW, 0);
+        StartCoroutine(WaitForDTWCalculation());
     }
 
-    public static void addUserFrameData(FrameData frameData)
+    public IEnumerator WaitForDTWCalculation()
     {
-        if (!recordingManagerInstance.detectGestures)
+        yield return StartCoroutine(job.WaitFor());
+    }
+
+    public void addUserFrameData(FrameData frameData)
+    {
+        if (!instance.detectGestures)
             return;
 
         user_frames_list.Add(frameData);
-        if(user_frames_list.Count == recordingFrameLimit)
+        if(user_frames_list.Count % recordingFrameLimit == 0)
         {
             int noPlaybackFiles = Directory.GetFiles(playback_directory).Length;
             for(int i = 0; i < noPlaybackFiles; i++)
             {
                 record_file = playback_directory + "Record" + i + ".txt";
-                int matchPercent = detectGesture(record_file);
-                recordingManagerInstance.infoDTW.text = "DTW = " + matchPercent + "%";
+                detectGesture(record_file);
+                instance.infoDTW.text = "DTW = " + resDTW + "%";
 
                 //TODO
                 /*if(matchPercent > threshold)
@@ -170,12 +192,11 @@ public class RecordingManager : MonoBehaviour
                     //gesture detected logic
                 }*/
             }
-            user_frames_list = new List<FrameData>();
         }
     }
 
     // write frames data to specified recording file
-    public static void WriteDataToFile(FrameData frameData)
+    public void WriteDataToFile(FrameData frameData)
     {
         //no of recorded frames
         framesRecorded++;
