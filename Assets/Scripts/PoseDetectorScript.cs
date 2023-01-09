@@ -36,6 +36,12 @@ public class PoseDetectorScript : MonoBehaviour
     // pose-time with best matching
     private float fMatchPoseTime = 0f;
 
+    public GameObject IncorrectPositionSound;
+    private WindowsVoice windowsVoice;
+    public string initialSpeech = "This is an application which detects bad posture and nervous gestures" +
+        " when sitting at the desk. Try following the pose on the left and be aware of any audio beeps signaling" +
+        " an anxious gesture or a breach of correct posture!";
+    private static float incorrectPositionSoundCountdown = 10.0f;
 
     // data for each saved pose
     public class PoseModelData
@@ -112,13 +118,13 @@ public class PoseDetectorScript : MonoBehaviour
 
     private void Awake()
     {
+        windowsVoice = GameObject.Find("KinectController").GetComponent<WindowsVoice>();
         KinectManager kinectManager = KinectManager.Instance;
-        for (int i = 0; i < poseJoints.Count; i++)
-        {
-            //Debug.Log(i + " " + poseJoints[i]);
-            KinectInterop.JointType joint = poseJoints[i];
-            //Debug.Log("next joint " + kinectManager.GetNextJoint(joint));
-        }
+    }
+
+    void Start()
+    {
+        windowsVoice.speak(initialSpeech);
     }
 
     void Update()
@@ -157,6 +163,20 @@ public class PoseDetectorScript : MonoBehaviour
                 //                                    (bPoseMatched ? "- Matched" : ""));
                 string sPoseMessage = string.Format("Pose match: {0:F0}% {1}", fMatchPercent * 100f, (bPoseMatched ? "- Correct position" : "- Incorrect position"));
                 infoText.text = sPoseMessage;
+
+                incorrectPositionSoundCountdown -= Time.deltaTime;
+                if (!bPoseMatched && (incorrectPositionSoundCountdown).ToString("0") == "0")
+                {
+                    if (!IncorrectPositionSound.GetComponent<AudioSource>().isPlaying && RecordingManager.Instance.gameModeStat == RecordingManager.GameMode.Default)
+                        IncorrectPositionSound.GetComponent<AudioSource>().Play();
+                    incorrectPositionSoundCountdown = 10.0f;
+                }
+                else if(bPoseMatched)
+                {
+                    if (IncorrectPositionSound.GetComponent<AudioSource>().isPlaying)
+                        IncorrectPositionSound.GetComponent<AudioSource>().Pause();
+                    incorrectPositionSoundCountdown = 0.0f;
+                }
             }
         }
         else

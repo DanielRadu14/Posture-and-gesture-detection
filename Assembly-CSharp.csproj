@@ -62,6 +62,7 @@
     <Compile Include="Assets\Scripts\Samples\GetFacePointsDemo.cs" />
     <Compile Include="Assets\Scripts\PoseDetectorScript.cs" />
     <Compile Include="Assets\Scripts\KinectAudioTracker.cs" />
+    <Compile Include="Assets\Scripts\Job.cs" />
     <Compile Include="Assets\Scripts\Interfaces\Kinect2UwpInterface.cs" />
     <Compile Include="Assets\Scripts\BackgroundColorImage.cs" />
     <Compile Include="Assets\Scripts\Interfaces\DummyK2Interface.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Assets\Scripts\Utilities\AsyncTask.cs" />
     <Compile Include="Assets\Scripts\Samples\JointOrientationView.cs" />
     <Compile Include="Assets\Scripts\AvatarController.cs" />
+    <Compile Include="Assets\Scripts\ThreadedJob.cs" />
     <Compile Include="Assets\Scripts\Samples\SimpleVisualGestureListener.cs" />
     <Compile Include="Assets\Scripts\FacetrackingManager.cs" />
     <Compile Include="Assets\Scripts\KinectDataServer.cs" />
@@ -116,8 +118,7 @@
     <Compile Include="Assets\Scripts\Filters\JointPositionsFilter.cs" />
     <Compile Include="Assets\Scripts\PoseModelHelper.cs" />
     <Compile Include="Assets\Scripts\Samples\FollowUserRotation.cs" />
-    <Compile Include="Assets\Scripts\ThreadedJob.cs" />
-    <Compile Include="Assets\Scripts\Job.cs" />
+    <Compile Include="Assets\Scripts\WindowsVoice.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\SharpZipLib\ICSharpCode.SharpZipLib.dll" />

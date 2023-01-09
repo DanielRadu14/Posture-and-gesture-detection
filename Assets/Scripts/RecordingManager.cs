@@ -44,6 +44,10 @@ public class RecordingManager : MonoBehaviour
 
     private Job job;
     public int resDTW;
+    public bool showDTWScore = true;
+    public int resDTWTreshold = 90;
+
+    public GameObject gestureDetectedSound;
 
     public static RecordingManager Instance
     {
@@ -184,13 +188,14 @@ public class RecordingManager : MonoBehaviour
             {
                 record_file = playback_directory + "Record" + i + ".txt";
                 detectGesture(record_file);
-                instance.infoDTW.text = "DTW = " + resDTW + "%";
 
-                //TODO
-                /*if(matchPercent > threshold)
+                if(showDTWScore)
+                    instance.infoDTW.text = "DTW = " + resDTW + "%";
+                
+                if(resDTW > resDTWTreshold && gameModeStat == GameMode.Default)
                 {
-                    //gesture detected logic
-                }*/
+                    gestureDetectedSound.GetComponent<AudioSource>().Play();
+                }
             }
         }
     }
